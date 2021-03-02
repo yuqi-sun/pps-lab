@@ -11,14 +11,8 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 public class CircularListTest {
 
-    //TODO: test implementation
-
-    /*@Disabled
-    @Test public void testTodo(){
-        Assertions.fail();
-    }*/
-
     private CircularList list;
+    private final SelectStrategyFactory selectStrategyFactory = new SelectStrategyFactoryImpl();
 
     @BeforeEach
     void beforeEach() {
@@ -26,7 +20,7 @@ public class CircularListTest {
     }
 
     @Test
-    void testAdd(){
+    void testAdd() {
         this.list.add(1);
         assertEquals(1, this.list.next().get());
     }
@@ -44,7 +38,7 @@ public class CircularListTest {
     }
 
     @Test
-    void testIsNotEmpty(){
+    void testIsNotEmpty() {
         this.list.add(1);
         assertFalse(this.list.isEmpty());
     }
@@ -52,8 +46,8 @@ public class CircularListTest {
     @Test
     void testNext() {
         IntStream.range(0, 5)
-                 .peek(i -> this.list.add(i))
-                 .forEach(i -> assertEquals(i, this.list.next().get()));
+                .peek(i -> this.list.add(i))
+                .forEach(i -> assertEquals(i, this.list.next().get()));
 
         assertEquals(0, this.list.next().get());
     }
@@ -61,7 +55,7 @@ public class CircularListTest {
     @Test
     void testPrevious() {
         IntStream.range(0, 5)
-                 .forEach(i -> this.list.add(i));
+                .forEach(i -> this.list.add(i));
 
         this.list.next();
         this.list.next();
@@ -72,7 +66,7 @@ public class CircularListTest {
     @Test
     void testReset() {
         IntStream.range(0, 5)
-                 .forEach(i -> this.list.add(i));
+                .forEach(i -> this.list.add(i));
 
         this.list.next();
         this.list.next();
@@ -88,19 +82,19 @@ public class CircularListTest {
                 .forEach(i -> this.list.add(i));
 
         this.list.next();
-        assertEquals(2, this.list.next(new EvenStrategy()).get());
-        assertEquals(0, this.list.next(new EvenStrategy()).get());
+        assertEquals(2, this.list.next(this.selectStrategyFactory.createEvenStrategy()).get());
+        assertEquals(0, this.list.next(this.selectStrategyFactory.createEvenStrategy()).get());
     }
 
     @Test
     void testMultipleOf() {
         IntStream.range(0, 3)
-                 .forEach(i -> this.list.add(i));
+                .forEach(i -> this.list.add(i));
 
         this.list.next();
 
-        assertEquals(2, this.list.next(new MultipleOfStrategy(2)).get());
-        assertEquals(0, this.list.next(new MultipleOfStrategy(2)).get());
+        assertEquals(2, this.list.next(this.selectStrategyFactory.createMultipleOfStrategy(2)).get());
+        assertEquals(0, this.list.next(this.selectStrategyFactory.createMultipleOfStrategy(2)).get());
     }
 
     @Test
@@ -111,7 +105,7 @@ public class CircularListTest {
 
         this.list.next();
 
-        assertEquals(0, this.list.next(new EqualsStrategy(0)).get());
-        assertEquals(0, this.list.next(new EqualsStrategy(0)).get());
+        assertEquals(0, this.list.next(this.selectStrategyFactory.createEqualsStrategy(0)).get());
+        assertEquals(0, this.list.next(this.selectStrategyFactory.createEqualsStrategy(0)).get());
     }
 }
