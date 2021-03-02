@@ -4,7 +4,7 @@ public class EqualsStrategy implements SelectStrategy {
 
     final private int value;
 
-    EqualsStrategy(final int value) {
+    public EqualsStrategy(final int value) {
         this.value = value;
     }
     @Override

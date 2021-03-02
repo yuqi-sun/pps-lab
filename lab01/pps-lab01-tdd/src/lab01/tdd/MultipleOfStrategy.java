@@ -4,7 +4,7 @@ public class MultipleOfStrategy implements SelectStrategy{
 
     final private int divisor;
 
-    MultipleOfStrategy(final int divisor) {
+    public MultipleOfStrategy(final int divisor) {
         this.divisor = divisor;
     }
 

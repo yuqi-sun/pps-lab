@@ -3,6 +3,7 @@ package lab01.tdd;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.IntStream;
 
 public class CircularListImpl implements CircularList {
 
@@ -31,13 +32,13 @@ public class CircularListImpl implements CircularList {
 
     @Override
     public Optional<Integer> next() {
-        this.updatePosition(currentPosition + 1, 0);
+        this.getNextPosition(currentPosition + 1, 0);
         return Optional.of(this.list.get(currentPosition));
     }
 
     @Override
     public Optional<Integer> previous() {
-        this.updatePosition(currentPosition - 1, this.size() - 1);
+        this.getNextPosition(currentPosition - 1, this.size() - 1);
         return Optional.of(this.list.get(currentPosition));
     }
 
@@ -48,10 +49,16 @@ public class CircularListImpl implements CircularList {
 
     @Override
     public Optional<Integer> next(SelectStrategy strategy) {
-        return Optional.empty();
+
+        return IntStream.concat(IntStream.range(this.currentPosition+1, this.size()), IntStream.range(0, this.currentPosition))
+                .filter(i -> strategy.apply(this.list.get(i)))
+                .boxed()
+                .findFirst()
+                .map(i -> this.list.get(this.getNextPosition(i, 0)));
     }
 
-    private void updatePosition(final int newPosition, final int resetPosition) {
+    private int getNextPosition(final int newPosition, final int resetPosition) {
         this.currentPosition = newPosition >= 0 && newPosition <= this.size() - 1 ? newPosition : resetPosition;
+        return this.currentPosition;
     }
 }
