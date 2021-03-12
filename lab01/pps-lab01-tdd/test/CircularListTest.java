@@ -13,8 +13,6 @@ import static org.junit.jupiter.api.Assertions.*;
 public class CircularListTest {
 
     final static private int NUM_ELEMENT = 3;
-    final static private int DIVISOR = 2;
-    final static private int EQUAL_VALUE = 0;
     private CircularList list;
     private final SelectStrategyFactory selectStrategyFactory = new SelectStrategyFactoryImpl();
 
@@ -80,24 +78,49 @@ public class CircularListTest {
     }
 
     @Test
+    void testEmptyEven() {
+        this.list.add(1);
+        this.list.add(3);
+
+        assertEquals(Optional.empty(), this.list.next(this.selectStrategyFactory.createEvenStrategy()));
+    }
+
+    @Test
     void testMultipleOf() {
         this.fillList();
-        final SelectStrategy multipleOfStrategy = this.selectStrategyFactory.createMultipleOfStrategy(DIVISOR);
+        final int divisor = 2;
+        final SelectStrategy multipleOfStrategy = this.selectStrategyFactory.createMultipleOfStrategy(divisor);
         IntStream.concat(IntStream.range(0, NUM_ELEMENT), IntStream.range(0, NUM_ELEMENT))
-                .filter(i -> i%DIVISOR == 0)
+                .filter(i -> i%divisor == 0)
                 .forEach(i -> assertEquals(Optional.of(i),
                         this.list.next(multipleOfStrategy)));
     }
 
     @Test
+    void testEmptyMultipleOf() {
+        this.list.add(1);
+        this.list.add(3);
+
+        assertEquals(Optional.empty(), this.list.next(this.selectStrategyFactory.createMultipleOfStrategy(7)));
+    }
+
+    @Test
     void testEquals() {
+        final int equalValue = 0;
         this.fillList();
-        this.list.add(EQUAL_VALUE);
-        final SelectStrategy equalsStrategy = this.selectStrategyFactory.createEqualsStrategy(EQUAL_VALUE);
+        this.list.add(equalValue);
+
+        final SelectStrategy equalsStrategy = this.selectStrategyFactory.createEqualsStrategy(equalValue);
         IntStream.concat(IntStream.range(0, NUM_ELEMENT), IntStream.range(0, NUM_ELEMENT))
-                .filter(i -> i == EQUAL_VALUE)
+                .filter(i -> i == equalValue)
                 .forEach(i -> assertEquals(Optional.of(i),
                         this.list.next(equalsStrategy)));
+    }
+
+    @Test
+    void testEmptyEquals() {
+        this.fillList();
+        assertEquals(Optional.empty(), this.list.next(this.selectStrategyFactory.createEqualsStrategy(5)));
     }
 
     private void fillList() {
