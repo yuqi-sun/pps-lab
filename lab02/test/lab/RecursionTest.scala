@@ -12,9 +12,4 @@ class RecursionTest {
     assertEquals(3, fib(4))
     assertEquals(8, fib(6))
   }
-
-  @Test def testFibException(): Unit = {
-    assertThrows(classOf[IllegalArgumentException], () => fib(-1))
-  }
-
 }

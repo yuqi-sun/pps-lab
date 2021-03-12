@@ -11,9 +11,6 @@ object Recursion {
       case _ => _fib(num - 1, secondToLast, secondToLast + last)
     }
 
-    if (n < 0)
-      throw new IllegalArgumentException()
-    else
-      _fib(n, 0, 1)
+    _fib(n, 0, 1)
   }
 }

@@ -29,10 +29,4 @@ class ShapeTest {
     assertEquals(Math.pow(side, 2), area(square))
   }
 
-  @Test def testNonPositiveShape(): Unit ={
-    assertThrows(classOf[IllegalArgumentException], () => Rectangle(-5, height))
-    assertThrows(classOf[IllegalArgumentException], () => Circle(-5))
-    assertThrows(classOf[IllegalArgumentException], () => Square(-5))
-  }
-
 }

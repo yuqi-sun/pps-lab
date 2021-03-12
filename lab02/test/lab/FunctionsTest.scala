@@ -6,10 +6,6 @@ import org.junit.jupiter.api.Test
 
 class FunctionsTest {
 
-  val lowestNumber = 1
-  val middleNumber = 2
-  val highestNumber = 3
-
   @Test def testEven() {
     assertEquals("even", parityVal(4))
     assertEquals("even", parityMethod(4))
@@ -51,21 +47,21 @@ class FunctionsTest {
   }
 
   def testCurrying(f:Int => Int => Int => Boolean) {
-    assertTrue(f(lowestNumber)(middleNumber)(highestNumber))
-    assertFalse(f(lowestNumber)(highestNumber)(middleNumber))
-    assertFalse(f(highestNumber)(middleNumber)(lowestNumber))
-    assertFalse(f(middleNumber)(lowestNumber)(highestNumber))
-    assertFalse(f(middleNumber)(highestNumber)(lowestNumber))
-    assertFalse(f(highestNumber)(lowestNumber)(middleNumber))
+    assertTrue(f(1)(2)(3))
+    assertFalse(f(1)(3)(2))
+    assertFalse(f(3)(2)(1))
+    assertFalse(f(2)(1)(3))
+    assertFalse(f(2)(3)(1))
+    assertFalse(f(3)(1)(2))
   }
 
   def testNoCurrying(f:(Int, Int, Int) => Boolean) {
-    assertTrue(f(lowestNumber, middleNumber, highestNumber))
-    assertFalse(f(lowestNumber, highestNumber, middleNumber))
-    assertFalse(f(highestNumber, middleNumber, lowestNumber))
-    assertFalse(f(middleNumber, lowestNumber, highestNumber))
-    assertFalse(f(middleNumber, highestNumber, lowestNumber))
-    assertFalse(f(highestNumber, lowestNumber, middleNumber))
+    assertTrue(f(1, 2, 3))
+    assertFalse(f(1, 3, 2))
+    assertFalse(f(3, 2, 1))
+    assertFalse(f(2, 1, 3))
+    assertFalse(f(2, 3, 1))
+    assertFalse(f(3, 1, 2))
   }
 
 }

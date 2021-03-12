@@ -4,16 +4,9 @@ sealed trait Shape
 
 object Shape {
 
-  case class Rectangle(base:Double, height:Double) extends Shape {
-    throwExceptionIfNegative(base)
-    throwExceptionIfNegative(height)
-  }
-  case class Circle(radius:Double) extends Shape {
-    throwExceptionIfNegative(radius)
-  }
-  case class Square(side:Double) extends Shape {
-    throwExceptionIfNegative(side)
-  }
+  case class Rectangle(base:Double, height:Double) extends Shape
+  case class Circle(radius:Double) extends Shape
+  case class Square(side:Double) extends Shape
 
   def perimeter(shape:Shape): Double = shape match {
     case Rectangle(base, height) => (base+height)*2
@@ -25,10 +18,5 @@ object Shape {
     case Rectangle(base, height) => base*height
     case Circle(radius) => Math.pow(radius, 2)*Math.PI
     case Square(side) => Math.pow(side, 2)
-  }
-
-  def throwExceptionIfNegative(n:Double): Unit = {
-    if (n < 0)
-      throw new IllegalArgumentException()
   }
 }
