@@ -11,11 +11,10 @@ object Ex2 {
 
   @tailrec
   def max(l: List[Int]): Option[Int] = l match {
-    case Cons(head, tail) =>
-      if (filter(tail)(_ > head) == Nil())
-        Some(head)
-      else
-        max(tail)
+    case Cons(head, tail) => filter(tail)(_ > head) match {
+      case Nil() => Some(head)
+      case _ => max(tail)
+    }
     case Nil() => None()
   }
 
