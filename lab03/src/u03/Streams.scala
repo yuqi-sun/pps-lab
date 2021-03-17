@@ -7,8 +7,8 @@ object Streams {
   sealed trait Stream[A]
 
   object Stream {
-    private case class Empty[A]() extends Stream[A]
-    private case class Cons[A](head: () => A, tail: () => Stream[A]) extends Stream[A]
+    case class Empty[A]() extends Stream[A]
+    case class Cons[A](head: () => A, tail: () => Stream[A]) extends Stream[A]
 
     def empty[A](): Stream[A] = Empty()
 
