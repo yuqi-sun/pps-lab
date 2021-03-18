@@ -8,11 +8,11 @@ import lab.StreamTasks._
 
 class StreamTest {
 
-  val s: Stream[Int] = Stream.take(Stream.iterate(0)(_+1))(10)
-
   @Test def testDrop(): Unit = {
+    val s: Stream[Int] = Stream.take(Stream.iterate(0)(_+1))(10)
     assertEquals(Cons(6, Cons(7, Cons(8, Cons(9, Nil())))), Stream.toList(drop(s)(6)))
     assertEquals(Nil(), Stream.toList(drop(s)(20)))
+    assertEquals(Stream.toList(s), Stream.toList(drop(s)(-1)))
   }
 
   @Test def testConstant(): Unit = {

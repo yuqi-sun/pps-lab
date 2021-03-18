@@ -4,7 +4,7 @@ import u02.Optionals.Option
 import u02.Optionals.Option.{None, Some}
 import u02.SumTypes.{Person, Teacher}
 import u03.Lists._
-import u03.Lists.List.{filter, _}
+import u03.Lists.List._
 
 import scala.annotation.tailrec
 
