@@ -9,13 +9,11 @@ object ListFactory {
 
 object SameTeacher {
 
-  def unapply(list: List[Course]): Option[String] = list match {
-    case Cons(head, tail) =>
-      val l = foldLeft(tail)(nil[Boolean])((acc, course) => Cons(course.teacher == head.teacher, acc))
-      filter(l)(_ == false) match {
-        case Nil() => Some(head.teacher)
-        case _ => None
-      }
+  def unapply(list: List[Course]): Option[String] = map(list)(_.teacher) match {
+    case Cons(head, tail) => foldLeft[String, Option[String]](tail)(Some(head))((acc, teacher) => acc match {
+      case Some(n) if n == teacher => Some(n)
+      case _ => None
+    })
     case _ => None
   }
 }

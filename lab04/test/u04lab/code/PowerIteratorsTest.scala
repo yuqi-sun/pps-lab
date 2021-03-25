@@ -1,7 +1,6 @@
 package u04lab.code
 
 import Optionals._
-import Lists._
 import Lists.List._
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.Assertions._
