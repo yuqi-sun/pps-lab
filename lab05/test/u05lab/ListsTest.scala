@@ -19,4 +19,12 @@ class ListsTest {
     assertEquals((List.nil, l), l.partition(_ > 10))
     assertEquals((l, List.nil), l.partition(_ < 10))
   }
+
+  @Test def testSpan(): Unit = {
+    val l = List(0, 2, 4, 1, 0)
+    assertEquals((List(0, 2, 4), List(1, 0)), l.span(_%2 == 0))
+    assertEquals((List.nil, List.nil), List.nil[Int].span(_%2 == 0))
+    assertEquals((List.nil, l), l.span(_ > 10))
+    assertEquals((l, List.nil), l.span(_ < 10))
+  }
 }

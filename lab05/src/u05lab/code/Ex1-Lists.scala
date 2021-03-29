@@ -125,7 +125,16 @@ trait ListImplementation[A] extends List[A] {
   }
   override def partition(pred: A => Boolean): (List[A],List[A]) = (this.filter(pred), this.filter(!pred(_)))
 
-  override def span(pred: A => Boolean): (List[A],List[A]) = ???
+  override def span(pred: A => Boolean): (List[A],List[A]) = this match {
+    case h :: t =>
+      if (pred(h)) {
+        val l = t.span(pred)
+        (h :: l._1, l._2)
+      } else {
+        (Nil(), this)
+      }
+    case _ => (Nil(), Nil())
+  }
 
   /**
     *
