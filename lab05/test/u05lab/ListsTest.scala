@@ -27,4 +27,10 @@ class ListsTest {
     assertEquals((List.nil, l), l.span(_ > 10))
     assertEquals((l, List.nil), l.span(_ < 10))
   }
+
+  @Test def testReduce(): Unit = {
+    val l = List(0, 1, 2, 3)
+    assertEquals(6, l.reduce(_+_))
+    assertThrows(classOf[UnsupportedOperationException],() => List.nil[Int].reduce(_+_))
+  }
 }
