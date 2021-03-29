@@ -145,7 +145,18 @@ trait ListImplementation[A] extends List[A] {
     case _ => throw new UnsupportedOperationException
   }
 
-  override def takeRight(n: Int): List[A] = ???
+  override def takeRight(n: Int): List[A] = {
+    def _takeRight(list:List[A]) : (List[A], Int) = list match {
+      case h :: t => _takeRight(t) match {
+        case (l, times) if times < n => (h :: l, times + 1)
+        case pair => pair
+      }
+      case _ => (Nil(), 0)
+    }
+
+    _takeRight(this)._1
+  }
+
 }
 
 // Factories
