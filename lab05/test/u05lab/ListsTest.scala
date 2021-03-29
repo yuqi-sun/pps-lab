@@ -11,4 +11,12 @@ class ListsTest {
     assertEquals(List.nil, List.nil.zipRight)
     assertEquals(List(("a",0), ("b",1), ("c",2)), l.zipRight)
   }
+
+  @Test def testPartition(): Unit = {
+    val l = List(0, 1, 2, 3, 4, 5)
+    assertEquals((List(0, 2, 4), List(1, 3, 5)), l.partition(_%2 == 0))
+    assertEquals((List.nil, List.nil), List.nil[Int].partition(_%2 == 0))
+    assertEquals((List.nil, l), l.partition(_ > 10))
+    assertEquals((l, List.nil), l.partition(_ < 10))
+  }
 }

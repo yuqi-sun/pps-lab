@@ -123,7 +123,7 @@ trait ListImplementation[A] extends List[A] {
 
     _fun(this, 0)
   }
-  override def partition(pred: A => Boolean): (List[A],List[A]) = ???
+  override def partition(pred: A => Boolean): (List[A],List[A]) = (this.filter(pred), this.filter(!pred(_)))
 
   override def span(pred: A => Boolean): (List[A],List[A]) = ???
 
