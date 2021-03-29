@@ -42,4 +42,10 @@ class ListsTest {
     assertEquals(List.nil, List.nil.takeRight(10))
   }
 
+  @Test def testCollect(): Unit = {
+    val l = List(0, 1, 2, 3, 4, 5)
+    assertEquals(List(1, 3, 5), l.collect({case x if x%2 == 0 => x + 1}))
+    assertEquals(List.nil, l.collect({case x if x > 10 => x}))
+    assertEquals(List.nil, List.nil[Int].collect({case x if x > 10 => x}))
+  }
 }
