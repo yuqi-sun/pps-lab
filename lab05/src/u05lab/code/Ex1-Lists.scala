@@ -1,5 +1,7 @@
 package u05lab.code
 
+import u05lab.code.List.nil
+
 import scala.annotation.tailrec
 import scala.language.postfixOps // silence warnings
 
@@ -118,24 +120,25 @@ trait ListImplementation[A] extends List[A] {
   }
 
   override def zipRight: List[(A,Int)] = {
-    def _fun(list:List[A], acc: Int): List[(A, Int)] = list match {
-      case h :: t => (h, acc) :: _fun(t, acc+1)
-      case _ => Nil()
+    @tailrec
+    def _zipRight(list:List[A], i:Int, acc:List[(A, Int)]): List[(A, Int)] = list match {
+      case h :: t => _zipRight(t, i+1, (h, i)::acc)
+      case _ => acc.reverse()
     }
 
-    _fun(this, 0)
+    _zipRight(this, 0, nil)
   }
-  override def partition(pred: A => Boolean): (List[A],List[A]) = (this.filter(pred), this.filter(!pred(_)))
+  override def partition(pred: A => Boolean): (List[A],List[A]) = (filter(pred), filter(!pred(_)))
 
-  override def span(pred: A => Boolean): (List[A],List[A]) = this match {
-    case h :: t =>
-      if (pred(h)) {
-        val l = t.span(pred)
-        (h :: l._1, l._2)
-      } else {
-        (Nil(), this)
-      }
-    case _ => (Nil(), Nil())
+  override def span(pred: A => Boolean): (List[A],List[A]) = {
+    @tailrec
+    def _span(list:List[A], pred: A=>Boolean, res1: List[A]): (List[A],List[A]) = list match {
+      case h::t if pred(h) => _span(t, pred, h :: res1)
+      case h::_ if !(pred(h)) => (res1.reverse(), list)
+      case _ => (res1.reverse(), Nil())
+    }
+
+    _span(this, pred, nil)
   }
 
   /**
