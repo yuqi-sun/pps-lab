@@ -23,7 +23,32 @@ object TicTacToe extends App{
     } yield Mark(x, y, player)::board
   }
 
-  def computeAnyGame(player: Player, moves: Int): Stream[Game] = ???
+  def computeAnyGame(player: Player, moves: Int): LazyList[Game] = moves match{
+    case 0 => LazyList(List(Nil))
+    case _ => for {
+      games <- computeAnyGame(player.other, moves-1)
+      board <- placeAnyMark(games.head, player)
+    } yield board :: games
+  }
+
+  def computeAnyGameTillVictory(player:Player, moves:Int): LazyList[Game] = moves match{
+    case 0 => LazyList(List(Nil))
+    case _ => for {
+      games <- computeAnyGame(player.other, moves-1)
+      board <- placeAnyMark(games.head, player)
+    } yield if(checkIfWon(games)) games else board :: games
+  }
+
+  def checkIfWon(game: Game):Boolean =
+    (
+      (0 to 2).map(x => (0 to 2).map(y => (x, y))):++
+      (0 to 2).map(y => (0 to 2).map(x => (x, y))):+
+      (0 to 2).map(x => (x, x)):+
+      (0 to 2).map(x => (x, 2-x))
+    ).map(_.flatMap(p => find(game.head, p._1, p._2)))
+      .filter(_.size ==3)
+      .exists(s => s.forall(_ == s.head))
+
 
   def printBoards(game: Seq[Board]): Unit =
     for (y <- 0 to 2; board <- game.reverse; x <- 0 to 2) {
@@ -37,17 +62,17 @@ object TicTacToe extends App{
   println(find(List(Mark(0,0,X),Mark(0,1,O),Mark(0,2,X)),1,1)) // None
 
   // Exercise 2: implement placeAnyMark such that..
-  printBoards(placeAnyMark(List(),X))
+  //printBoards(placeAnyMark(List(),X))
   //... ... ..X ... ... .X. ... ... X..
   //... ..X ... ... .X. ... ... X.. ...
   //..X ... ... .X. ... ... X.. ... ...
-  printBoards(placeAnyMark(List(Mark(0,0,O)),X))
+  //printBoards(placeAnyMark(List(Mark(0,0,O)),X))
   //O.. O.. O.X O.. O.. OX. O.. O..
   //... ..X ... ... .X. ... ... X..
   //..X ... ... .X. ... ... X.. ...
 
   // Exercise 3 (ADVANCED!): implement computeAnyGame such that..
-  /*computeAnyGame(O, 4) foreach {g => printBoards(g); println()}
+  //computeAnyGame(O, 4) foreach {g => printBoards(g); println()}
   //... X.. X.. X.. XO.
   //... ... O.. O.. O..
   //... ... ... X.. X..
@@ -58,4 +83,5 @@ object TicTacToe extends App{
   //... .X. .X. .X. .X.
 
   // Exercise 4 (VERY ADVANCED!) -- modify the above one so as to stop each game when someone won!!*/
+  //computeAnyGameTillVictory(O, 9) foreach {g => printBoards(g); println()}
 }
