@@ -1,0 +1,114 @@
+ex.1.1
+dropFirst(X,[X|T],T):- !.
+dropFirst(X,[H|Xs],[H|L]):- dropFirst(X,Xs,L).
+
+dropLast(X,[H|Xs],[H|L]):- dropLast(X,Xs,L), !.
+dropLast(X,[X|T],T).
+
+dropAll(X, [], []).
+dropAll(X,[X|Xs], L):- dropAll(X, Xs, L), !.
+dropAll(X, [H|Xs], [H|L2]):- dropAll(X,Xs,L2).
+
+----------------------------------------------------------------------------------
+
+ex.2.2
+
+fromCircList([H|T], G):- circList([H|T], G, H).
+
+circList([H1], [e(H1, H)], H).
+circList([H1, H2|T], [e(H1, H2)|L], H) :- circList([H2|T], L, H).
+
+----------------------------------------------------------------------------------
+
+ex.2.3
+dropAll(_, [], []).
+dropAll(X,[Y|Xs], L):- copy_term(X, Y), dropAll(X, Xs, L), !.
+dropAll(X, [H|Xs], [H|L2]):- dropAll(X,Xs,L2).
+
+dropNode(G,N,O):- dropAll(G,e(N,_),G2), dropAll(G2,e(_,N),O).
+dropNode([e(1,2),e(1,3),e(2,3)],1,[e(2,3)]).
+
+% e(N, _) once _ is 2, it's passed to the other dropAll as e(1, 2) and not e(1, _)
+% to solve this, we can use copy_term in dropAll
+
+----------------------------------------------------------------------------------
+
+ex.2.4
+reaching(G, N, L):- findall(H, member(e(N,H), G), L).
+
+----------------------------------------------------------------------------------
+
+ex.2.5
+
+anypath(G, N1, N2, L):- path(G, N1, N2, L).
+
+path([e(N1, N2)|T], N1, N2, [e(N1, N2)]).
+path([e(N1, H)|T], N1, N2, [e(N1, H)|L2]):- path(T, H, N2, L2).
+path([_|T], N1, N2, L):- path(T, N1, N2, L).
+
+----------------------------------------------------------------------------------
+
+ex.2.6
+allreaching(G, N, L):- findall(H, anypath(G, N, H, O), L).
+
+----------------------------------------------------------------------------------
+
+ex.2.7
+interval(A, B, A).
+interval(A, B, X):- A2 is A+1, A2<B, interval(A2,B,X).
+
+neighbour(A, B, N, M) :- mod(A, N) =\= 0, B is A-1. %left
+neighbour(A, B, N, M) :- B is A+1, mod(B, N) =\= 0. %right
+neighbour(A, B, N, M) :- B is A-N, B >= 0. %up
+neighbour(A, B, N, M) :- B is A+N, B < N*M.%down
+
+%generate all links in a grid (NxM) of nodes
+gridlink(N,M,link(X,Y)):-
+    N2 is N*M,
+	interval(0, N2, X),
+	neighbour(X,Y, N, M),
+	Y>=0, Y<N2.
+
+anypath(N, M, N1, N2, Max, L):- path(N, M, N1, N2, Max, L).
+
+path(N, M, N1, N2, Max, [e(N1, N2)]):- Max > 0, gridlink(N, M, link(N1, N2)).
+path(N, M, N1, N2, Max, [e(N1, H)|L2]):- Max > 0, gridlink(N, M, link(N1, H)),
+		Max2 is Max - 1, path(N, M, H, N2, Max2, L2).
+
+----------------------------------------------------------------------------------
+
+%next(@Table,@Player,-Result,-NewTable)
+
+checkIfEmpty(cell(A, B, C), P, N):- A=0, N=cell(P, B, C).
+checkIfEmpty(cell(A, B, C), P, N):- B=0, N=cell(A, P, C).
+checkIfEmpty(cell(A, B, C), P, N):- C=0, N=cell(A, B, P).
+
+checkIfWon([A, B, C], R):-  ((A=cell(x,x,x),!; B=cell(x,x,x)), !;C=cell(x,x,x),!;
+	(A=cell(x,_,_), B=cell(x,_,_), C=cell(x,_,_)),!;
+	(A=cell(_,x,_), B=cell(_,x,_), C=cell(_,x,_)),!;
+	(A=cell(_,_,x), B=cell(_,_,x), C=cell(_,_,x)),!;
+	(A=cell(x,_,_), B=cell(_,x,_), C=cell(_,_,x)),!;
+	(A=cell(_,_,x), B=cell(_,x,_), C=cell(x,_,_))),
+	R=win(x), !.
+checkIfWon([A, B, C], R):-  ((A=cell(o,o,o),!; B=cell(o,o,o)), !;C=cell(o,o,o),!;
+	(A=cell(o,_,_), B=cell(o,_,_), C=cell(o,_,_)),!;
+	(A=cell(_,o,_), B=cell(_,o,_), C=cell(_,o,_)),!;
+	(A=cell(_,_,o), B=cell(_,_,o), C=cell(_,_,o)),!;
+	(A=cell(o,_,_), B=cell(_,o,_), C=cell(_,_,o)),!;
+	(A=cell(_,_,o), B=cell(_,o,_), C=cell(o,_,_))),
+	R=win(o), !.
+checkIfWon([cell(A, B, C), cell(D, E, F), cell(G, H, I)], R):-
+	(A=x,!;A=o),(B=x,!;B=o), (C=x,!;C=o),
+	(D=x,!;D=o),(E=x,!;E=o), (F=x,!;F=o),
+	(G=x,!;G=o),(H=x,!;H=o), (I=x,!;I=o),
+	R=even, !.
+		
+checkIfWon([A, B, C], R):- R=nothing.
+
+next([A, B, C], P, R, NT):- (checkIfEmpty(A, P, N), NT=[N, B, C], checkIfWon(NT, R));
+			(checkIfEmpty(B, P, N), NT=[A, N, C], checkIfWon(NT, R));
+			(checkIfEmpty(C, P, N), NT=[A, B, N], checkIfWon(NT, R)).
+
+game(T, P, R2, NT):- next(T, P, R2, NT), (R2=win(P),!;R2=even).
+game(T, P, R, [[NT]|[L]]):- P=x, next(T, P, R2, NT), R2=nothing, game(NT, o, R, L).
+game(T, P, R, [[NT]|[L]]):- P=o, next(T, P, R2, NT), R2=nothing, game(NT, x, R, L).

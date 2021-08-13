@@ -87,10 +87,10 @@ sum([X|T], S):- sum(T, M), S is X+M.
 % Suppose the list has at least one element
 
 max([X|Xs], M):- max(Xs, M, X).
-max([X], M, T):- X > T, M = X.
-max([X], M, T):- X =< T, M = T.
+max([], M, T):- M = T.
 max([X|Xs], M, T) :- X > T, max(Xs, M, X).
 max([X|Xs], M, T) :- X =< T, max(Xs, M, T).
+
 
 % ----------------------------------------------------------------------------------
 
@@ -101,10 +101,7 @@ max([X|Xs], M, T) :- X =< T, max(Xs, M, T).
 % Suppose the list has at least one element
 
 maxmin([X|Xs], Max, Min):- maxmin(Xs, Max, Min, X, X).
-maxmin([X], Max, Min, Tmax, Tmin):- X > Tmax, Max = X, Min = Tmin.
-maxmin([X], Max, Min, Tmax, Tmin):- X < Tmin, Min = X, Max = Tmax.
-maxmin([X], Max, Min, Tmax, Tmin):- X =< Tmax, X >= Tmin, Max = Tmax, Min = Tmin.
-
+maxmin([], Max, Min, Tmax, Tmin):- Max = Tmax, Min = Tmin.
 maxmin([X|Xs], Max, Min, Tmax, Tmin):- X > Tmax, maxmin(Xs, Max, Min, X, Tmin).
 maxmin([X|Xs], Max, Min, Tmax, Tmin):- X < Tmin, maxmin(Xs, Max, Min, Tmax, X).
 maxmin([X|Xs], Max, Min, Tmax, Tmin):- X =< Tmax, X >= Tmin, maxmin(Xs, Max, Min,Tmax, Tmin).
